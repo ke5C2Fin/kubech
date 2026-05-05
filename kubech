@@ -19,7 +19,7 @@ kubech() {
   \cat <<EOF
 NOTE:
   - The command "kubech" is just a meta for other commands. So kubech does nothing by itself.
-  - Also short names like "kch/kchc/kchn/kchu/kchr/kchz" are available.
+  - Also short names like "kchc/kchn/kchu/kchr/kchz" are available.
 
 VARS:
   KUBECONFIG_SRC_DIR     : Set directory with extra kubectl config files to read in kubech commands.
