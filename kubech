@@ -129,7 +129,7 @@ alias kchc='kubechc'
 #
 # Change kubectl namespace
 kubechn() {
-    kubectl config current-context >/dev/null 2>&1 || { echo "Error: No current context is set" >&2; return 1; }
+    kubectl config current-context >/dev/null 2>&1 || { echo "Error: no current-context set" >&2; return 1; }
 
     kube_namespace="${1:-default}"
 
