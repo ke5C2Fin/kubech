@@ -58,8 +58,8 @@ git clone https://github.com/DevOpsHiveHQ/kubech ~/.kubech
 ### Bash
 
 ```shell
-echo 'source ~/.kubech/kubech' >> ~/.bashrc
-echo 'source ~/.kubech/completion/kubech.bash' >> ~/.bashrc
+echo '. ~/.kubech/kubech' >> ~/.bashrc
+echo '. ~/.kubech/completion/kubech.bash' >> ~/.bashrc
 ```
 
 ### Zsh
@@ -67,7 +67,7 @@ echo 'source ~/.kubech/completion/kubech.bash' >> ~/.bashrc
 Completion for `zsh` with `oh-my-zsh` enabled.
 
 ```shell
-echo 'source ~/.kubech/kubech' >> ~/.zshrc
+echo '. ~/.kubech/kubech' >> ~/.zshrc
 ln -s ~/.kubech/completion/kubechn.zsh ~/.oh-my-zsh/completions/_kubechn.zsh
 ln -s ~/.kubech/completion/kubechc.zsh ~/.oh-my-zsh/completions/_kubechc.zsh
 ```
