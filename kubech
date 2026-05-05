@@ -131,15 +131,17 @@ alias kchc='kubechc'
 kubechn() {
     kube_namespace="${1:-default}"
 
-    if [ "${KUBECH_NAMESPACE_CHECK}" = "label" ]; then
-        kube_namespace_exists=$(kubectl get namespaces -l "kubernetes.io/metadata.name=${kube_namespace}" -o name)
-    else
-        kube_namespace_all=$(kubectl get namespaces -o=jsonpath='{range .items[*]}{.metadata.name}{"\n"}{end}')
-        kube_namespace_exists=$(echo "${kube_namespace_all}" | grep -E "^${kube_namespace}$")
-    fi
+    kubectl config current-context >/dev/null 2>&1 || { echo "Error: No current context is set" >&2; return 1; }
 
     if [ -n "${1}" ]; then
-        # Only switch namespace if it exists.
+        # Check if namespace exists
+        if [ "${KUBECH_NAMESPACE_CHECK}" = "label" ]; then
+            kube_namespace_exists=$(kubectl get namespaces -l "kubernetes.io/metadata.name=${kube_namespace}" -o name)
+        else
+            kube_namespace_exists=$(echo "${kube_namespace_all}" | grep "^${kube_namespace}$")
+        fi
+
+        # Only switch namespace if it exists
         if [ -n "${kube_namespace_exists}" ]; then
             kubechc "$(kubectl config current-context)" "${kube_namespace}"
             kubectl config set-context --current --namespace="${kube_namespace}"
@@ -148,11 +150,7 @@ kubechn() {
             echo "The namespace \"${kube_namespace}\" doesn't exist"
         fi
     else
-        if [ -n "${kube_namespace_all}" ]; then
-            echo "${kube_namespace_all}" 
-        else
-            kubectl get namespaces -o=jsonpath='{range .items[*]}{.metadata.name}{"\n"}{end}'
-        fi
+        kubectl get namespaces -o=jsonpath='{range .items[*]}{.metadata.name}{"\n"}{end}'
     fi
 }
 
