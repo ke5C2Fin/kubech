@@ -132,6 +132,7 @@ kchc() { kubechc "$@"; }
 # Change kubectl namespace
 kubechn() {
     kube_namespace="${1:-default}"
+
     if [ "${KUBECH_NAMESPACE_CHECK}" = "label" ]; then
         kube_namespace_exists=$(kubectl get namespaces -l "kubernetes.io/metadata.name=${kube_namespace}" -o name)
     else
