@@ -6,7 +6,7 @@
 # and helps you to manage multi Kubernetes cluster at the same time
 
 #
-# Vars.
+# Vars
 KUBECONFIG_ORIG="${KUBECONFIG:-$HOME/.kube/config}"
 KUBECONFIG_SRC_DIR="${KUBECONFIG_SRC_DIR:-$HOME/.kube/config.src.d}"
 KUBECONFIG_DEST_DIR="${KUBECONFIG_DEST_DIR:-$HOME/.kube/config.dest.d}"
