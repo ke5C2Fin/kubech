@@ -169,8 +169,7 @@ alias kchu='kubechu'
 #
 # Remove auto-generated kubeconf files from kubech dist dir
 kubechr() {
-    ls "${KUBECONFIG_DEST_DIR}"/*.yaml &&
-    rm "${KUBECONFIG_DEST_DIR}"/*.yaml
+    find "${KUBECONFIG_DEST_DIR}" -maxdepth 1 -name "*.yaml" -delete
 }
 
 alias kchr='kubechr'
