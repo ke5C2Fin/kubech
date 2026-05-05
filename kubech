@@ -164,7 +164,7 @@ kubechu() {
     kubectl config unset current-context
 }
 
-alis kchu='kubechu'
+alias kchu='kubechu'
 
 #
 # Remove auto-generated kubeconf files from kubech dist dir
