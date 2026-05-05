@@ -49,7 +49,7 @@ USAGE:
 EOF
 }
 
-alias kch='kubech'
+kch() { kubech "$@"; }
 
 #
 # General
@@ -125,7 +125,7 @@ kubechc() {
     fi
 }
 
-alias kchc='kubechc'
+kchc() { kubechc "$@"; }
 
 #
 # Change kubectl namespace
@@ -156,7 +156,7 @@ kubechn() {
     fi
 }
 
-alias kchn='kubechn'
+kchn() { kubechn "$@"; }
 
 #
 # Unset the active context
@@ -164,7 +164,7 @@ kubechu() {
     kubectl config unset current-context
 }
 
-alias kchu='kubechu'
+kchu() { kubechu "$@"; }
 
 #
 # Remove auto-generated kubeconf files from kubech dist dir
@@ -172,7 +172,7 @@ kubechr() {
     find "${KUBECONFIG_DEST_DIR}" -maxdepth 1 -name "*.yaml" -delete
 }
 
-alias kchr='kubechr'
+kchr() { kubechr "$@"; }
 
 #
 # Zeroing/resetting the KUBECONFIG env var
@@ -180,4 +180,4 @@ kubechz() {
     export KUBECONFIG="${KUBECONFIG_ORIG}"
 }
 
-alias kchz='kubechz'
+kchz() { kubechz "$@"; }
