@@ -131,7 +131,7 @@ alias kchc='kubechc'
 kubechn() {
     kube_namespace="${1:-default}"
 
-    \kubectl config current-context >/dev/null 2>&1 || { printf 'Error: no current-context set' >&2; return 1; }
+    \kubectl cluster-info >/dev/null 2>&1 || { printf 'Error: current context is not accessible\n' >&2; return 1; }
 
     if [ -n "${1}" ]; then
         # Check if namespace exists
@@ -147,7 +147,7 @@ kubechn() {
             \kubectl config set-context --current --namespace="${kube_namespace}"
             printf 'Switched to namespace %s\n' "${kube_namespace}"
         else
-            printf "The namespace %s doesn't exist\n" "${kube_namespace}"
+            printf "Namespace %s doesn't exist\n" "${kube_namespace}"
         fi
     else
         \kubectl get namespaces -o=jsonpath='{range .items[*]}{.metadata.name}{"\n"}{end}'
