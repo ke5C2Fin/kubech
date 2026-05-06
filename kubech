@@ -138,7 +138,7 @@ kubechn() {
         if [ "${KUBECH_NAMESPACE_CHECK}" = "label" ]; then
             kube_namespace_exists=$(kubectl get namespaces -l "kubernetes.io/metadata.name=${kube_namespace}" -o name)
         else
-            kube_namespace_exists=$(echo "${kube_namespace_all}" | grep "^${kube_namespace}$")
+            kube_namespace_exists=$(kubectl get namespaces -o=jsonpath='{range .items[*]}{.metadata.name}{"\n"}{end}' | grep "^${kube_namespace}$")
         fi
 
         # Only switch namespace if it exists
