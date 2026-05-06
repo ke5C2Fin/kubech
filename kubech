@@ -53,15 +53,15 @@ EOF
 # General
 
 # Create config dirs
-install -d -m 755 "${KUBECONFIG_SRC_DIR}" "${KUBECONFIG_DEST_DIR}"
+\install -d -m 755 "${KUBECONFIG_SRC_DIR}" "${KUBECONFIG_DEST_DIR}"
 
 #
 # Handling Kube config files
 _kubeconfig_files() {
     if [ -d "${KUBECONFIG_SRC_DIR}" ]; then
-        KUBECONFIG_FILES="$(find "${KUBECONFIG_SRC_DIR}" -type f -print | tr '\n' ':')"
+        KUBECONFIG_FILES="$(\find "${KUBECONFIG_SRC_DIR}" -type f -print | \tr '\n' ':')"
     fi
-    echo "${KUBECONFIG_FILES}${KUBECONFIG_ORIG}"
+    printf '%s%s' "${KUBECONFIG_FILES}" "${KUBECONFIG_ORIG}"
 }
 
 _kube_config() {
@@ -76,10 +76,10 @@ _kube_config() {
         KUBECONFIG_ACTIVE="${KUBECONFIG}"
     elif [ -n "${KUBECONFIG}" ]; then
         KUBECONFIG_ACTIVE="${KUBECONFIG}:${KUBECONFIG_DEFAULT}"
-        echo "${KUBECONFIG_ACTIVE}"
+        printf '%s' "${KUBECONFIG_ACTIVE}"
     else
         KUBECONFIG_ACTIVE="${KUBECONFIG_DEFAULT}:${KUBECONFIG_ORIG}"
-        echo "${KUBECONFIG_ACTIVE}"
+        printf '%s' "${KUBECONFIG_ACTIVE}"
     fi
 }
 
@@ -88,9 +88,9 @@ _kube_config() {
 _kube_context_filename() {
   kube_context="${1}"
   kube_namespace="${2}"
-  kube_context_filename=$(echo "${kube_context}" | tr -c '[:alnum:]\n' '_')
+  kube_context_filename=$(printf '%s' "${kube_context}" | \tr -c '[:alnum:]\n' '_')
 
-  echo "${kube_context_filename}-${kube_namespace}.yaml"
+  printf '%s-%s.yaml' "${kube_context_filename}" "${kube_namespace}"
 }
 
 #
@@ -100,10 +100,10 @@ _kubechg() {
     kube_namespace="${2:-default}"
     kubeconfig_file="$(_kube_context_filename "${kube_context}" "${kube_namespace}")"
 
-    install -m 600 /dev/null "${KUBECONFIG_DEST_DIR}/${kubeconfig_file}"
+    \install -m 600 /dev/null "${KUBECONFIG_DEST_DIR}/${kubeconfig_file}"
 
     KUBECONFIG="$(_kube_config)" \
-    kubectl config view \
+    \kubectl config view \
         --minify \
         --flatten \
         --context="${kube_context}" > \
@@ -120,7 +120,7 @@ kubechc() {
         _kubechg "${kube_context}" "${kube_namespace}"
         _kube_config "${KUBECONFIG_DEST_DIR}/$(_kube_context_filename "${kube_context}" "${kube_namespace}")"
     else
-        KUBECONFIG=$(_kube_config) kubectl config get-contexts --no-headers=true -o name
+        KUBECONFIG=$(_kube_config) \kubectl config get-contexts --no-headers=true -o name
     fi
 }
 
@@ -131,26 +131,26 @@ alias kchc='kubechc'
 kubechn() {
     kube_namespace="${1:-default}"
 
-    kubectl config current-context >/dev/null 2>&1 || { echo "Error: no current-context set" >&2; return 1; }
+    \kubectl config current-context >/dev/null 2>&1 || { printf 'Error: no current-context set' >&2; return 1; }
 
     if [ -n "${1}" ]; then
         # Check if namespace exists
         if [ "${KUBECH_NAMESPACE_CHECK}" = "label" ]; then
-            kube_namespace_exists=$(kubectl get namespaces -l "kubernetes.io/metadata.name=${kube_namespace}" -o name)
+            kube_namespace_exists=$(\kubectl get namespaces -l "kubernetes.io/metadata.name=${kube_namespace}" -o name)
         else
-            kube_namespace_exists=$(kubectl get namespaces -o=jsonpath='{range .items[*]}{.metadata.name}{"\n"}{end}' | grep "^${kube_namespace}$")
+            kube_namespace_exists=$(\kubectl get namespaces -o=jsonpath='{range .items[*]}{.metadata.name}{"\n"}{end}' | \grep "^${kube_namespace}$")
         fi
 
         # Only switch namespace if it exists
         if [ -n "${kube_namespace_exists}" ]; then
-            kubechc "$(kubectl config current-context)" "${kube_namespace}"
-            kubectl config set-context --current --namespace="${kube_namespace}"
-            echo "Switched to namespace \"${kube_namespace}\""
+            kubechc "$(\kubectl config current-context)" "${kube_namespace}"
+            \kubectl config set-context --current --namespace="${kube_namespace}"
+            printf 'Switched to namespace %s\n' "${kube_namespace}"
         else
-            echo "The namespace \"${kube_namespace}\" doesn't exist"
+            printf "The namespace %s doesn't exist\n" "${kube_namespace}"
         fi
     else
-        kubectl get namespaces -o=jsonpath='{range .items[*]}{.metadata.name}{"\n"}{end}'
+        \kubectl get namespaces -o=jsonpath='{range .items[*]}{.metadata.name}{"\n"}{end}'
     fi
 }
 
@@ -159,7 +159,7 @@ alias kchn='kubechn'
 #
 # Unset the active context
 kubechu() {
-    kubectl config unset current-context
+    \kubectl config unset current-context
 }
 
 alias kchu='kubechu'
@@ -167,7 +167,7 @@ alias kchu='kubechu'
 #
 # Remove auto-generated kubeconf files from kubech dist dir
 kubechr() {
-    find "${KUBECONFIG_DEST_DIR}" -maxdepth 1 -name "*.yaml" -delete
+    \find "${KUBECONFIG_DEST_DIR}" -maxdepth 1 -name "*.yaml" -delete
 }
 
 alias kchr='kubechr'
